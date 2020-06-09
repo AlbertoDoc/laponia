@@ -133,7 +133,10 @@ void preencherTabuleiro(string jogador,string nomeJogador1,string nomeJogador2,c
 }
 
 bool movimento(int origemX,int origemY,int destinoX,int destinoY,char tabuleiro[][12]){
-  if ((abs(origemX-destinoX)>=1 && abs(origemY-destinoY)>=1) || tabuleiro[destinoX][destinoY]!=' '){
+  //if ((abs(origemX-destinoX)>=1 && abs(origemY-destinoY)>=1) || tabuleiro[destinoX][destinoY]!=' '){
+    //return false;
+  //}
+  if((abs(origemX-destinoX) == 1 && abs(origemY-destinoY) == 1) || (abs(origemX-destinoX)>1 || abs(origemY-destinoY)>1 || tabuleiro[destinoX][destinoY]!=' ')){
     return false;
   }
   return true;
@@ -218,12 +221,15 @@ void realizarJogada(string &jogador,string nomeJogador1,string nomeJogador2,char
   cout<<"Rodada: "<<jogador<<endl;
   cout<<"Escolha seu guerreiro (X,Y): ";
   cin>>posicaoX>>virgula>>posicaoY;
+  cin.ignore();
   if (validarPosicao(posicaoX,posicaoY,tabuleiro,guerreiro)){
     cout<<"Escolher jogada (movimento: 1 | ataque: 2): ";
     cin>>jogada;
+    cin.ignore();
     if (jogada==1){
       cout<<"Posicao que deseja ir (X,Y): ";
       cin>>destinoX>>virgula>>destinoY;
+      cin.ignore();
       cout<<"--------------------------------------------------------------------------------------"<<endl;
       if (movimento(posicaoX,posicaoY,destinoX,destinoY,tabuleiro)){
         tabuleiro[destinoX][destinoY]=tabuleiro[posicaoX][posicaoY];
@@ -316,6 +322,7 @@ int main(){
   cout<<"----------------------------------------------------------------------------------------"<<endl<<endl;
   cout<<"Iniciar (start: 1 | exit: 0): ";
   cin>>start;
+  cin.ignore();
   cout<<endl;
   if (start){
     laponiaGame(tabuleiro,nomeJogador1,nomeJogador2,jogador);
