@@ -133,9 +133,6 @@ void preencherTabuleiro(string jogador,string nomeJogador1,string nomeJogador2,c
 }
 
 bool movimento(int origemX,int origemY,int destinoX,int destinoY,char tabuleiro[][12]){
-  //if ((abs(origemX-destinoX)>=1 && abs(origemY-destinoY)>=1) || tabuleiro[destinoX][destinoY]!=' '){
-    //return false;
-  //}
   if((abs(origemX-destinoX) == 1 && abs(origemY-destinoY) == 1) || (abs(origemX-destinoX)>1 || abs(origemY-destinoY)>1 || tabuleiro[destinoX][destinoY]!=' ')){
     return false;
   }
@@ -258,6 +255,7 @@ void laponiaGame(char tabuleiro[][12],string nomeJogador1,string nomeJogador2,st
   int posicaoX,posicaoY;
   char virgula;
   while (qtd_jogador[0]!=0 && qtd_jogador[1]!=0){
+    cout<<"Jogadores: "<<nomeJogador1<<"/"<<nomeJogador2<<endl<<endl;
 
     printarTabuleiro(tabuleiro);
     realizarJogada(jogador,nomeJogador1,nomeJogador2,tabuleiro,qtd_jogador);
@@ -273,33 +271,6 @@ void laponiaGame(char tabuleiro[][12],string nomeJogador1,string nomeJogador2,st
 
 
 }
-//
-// bool sortearJogador(int numeros[], int qtdNumeros, int limite){
-//     int qtd0 = 0;
-//     int qtd1 = 0;
-//
-//     srand(time(NULL));
-//
-//     for(int i=0;i<qtdNumeros;i++){
-//         numeros[i] = rand() % limite;
-//     }
-//
-//     for(int i=0;i<qtdNumeros;i++){
-//         if(numeros[i] == 0){
-//             qtd0++;
-//         } else {
-//             qtd1++;
-//         }
-//     }
-//
-//     if(qtd0 > qtd1){
-//         return true; //Jogador 1 começa
-//     } else {
-//         return false; //Jogador 2 começa
-//     }
-// }
-
-
 
 
 
@@ -328,7 +299,4 @@ int main(){
     laponiaGame(tabuleiro,nomeJogador1,nomeJogador2,jogador);
   }
   cout<<endl;
-
-
-
 }
