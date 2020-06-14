@@ -7,6 +7,12 @@
 using namespace std;
 
 int somadorX(int posicaoX){
+  // Essa função é responsavel por informar em que sentido será o ataque frontal,
+  // Já que o ataque de um guerreiro na posição de x<5 (parte de cima do tabuleiro)
+  // é diferente pra um guerreiro que esta na posição x>6 (parte de baixo do tabuleiro)
+
+  // Se retornar 1 o ataque é de cima pra baixo
+  // Se retornar -1 o ataque é de baixo pra cima
   if (posicaoX<5){
     return 1;
   }
@@ -14,6 +20,12 @@ int somadorX(int posicaoX){
 }
 
 int somadorY(int direcaoAtq,int posicaoX){
+  // Essa função é responsavel por dizer em qual sentido sera feito o ataque
+  // Caso direcaoAtq == 1 (esquerda) e posicaoX<5 (parte de cima do tabuleiro) eu tenho que incrementar
+  // valores de y para realizar meu ataque. logica parecida se aplica a (direcaoAtq==2)&&(posicaoX>6)
+  
+  // Caso nenhum dos dois casos acima forem satisfeitos é retornado -1, então precisamos decrementar valores de y
+  // para que o ataque obedeça ao que o jogador solicitou
   if (((direcaoAtq == 1) && (posicaoX<5)) || ((direcaoAtq==2)&&(posicaoX>6))){
     return 1;
   }
@@ -30,6 +42,7 @@ char numeroGuerreiro(string jogador,string nomeJogador1,string nomeJogador2){
 
 
 char guerreirOposto(char guerreiro){
+  // Verifica o tipo do guerreiro e retorna o oposto a ele
   if (guerreiro =='1'){
     return '2';
   }
@@ -167,72 +180,111 @@ bool movimento(int origemX,int origemY,int destinoX,int destinoY,char tabuleiro[
 }
 
 bool ataqueDiagonal(int contY,int contX,int posicaoAtqX,int posicaoAtqY,char guerreiro,char tabuleiro[][12]){
+  // Chama a função que retorna qual é o tipo do guerreiro do adversario
   char inimigo = guerreirOposto(guerreiro);
   bool interrompido = false;
   cout<<"--------------------------------------------------------------------------------------"<<endl;
+  // Verificação parecida com a função de ataque frontal, com a diferença de que agr a coordenada
+  // y deve ser levada em conta, já que o tabuleiro pode ser excedido lateralmente em um ataque diagonal
   while(posicaoAtqX<(TAM-1) && posicaoAtqX>0 && posicaoAtqY<(TAM-1) && !interrompido){
+    // Verifica se na posição do tabuleiro com as coordenadas de ataque tem um guerreiro inimigo
     if(tabuleiro[posicaoAtqX][posicaoAtqY]==inimigo){
+      // Caso tenha esse guerreiro é eliminado
       tabuleiro[posicaoAtqX][posicaoAtqY] = ' ';
+      // É printado na tela a jogada realizada
       cout<<"--> Guerreiro Da Posicao "<<posicaoAtqX<<","<<posicaoAtqY<<" Morreu!"<<endl;
+      // Retornado true pois o ataque foi bem sucedido
       return true;
     }
+    // Verifica se na posição de ataque no tabuleiro tem um aliado
     if(tabuleiro[posicaoAtqX][posicaoAtqY]==guerreiro){
+      // Caso tenha é informado o acontecido
       cout<<"--> Guerreiro Aliado No Caminho"<<endl;
+      // A variavel interrompido é setada como true para que o while nao continue avançando
       interrompido = true;
     }
+
+    // Incrementada as variaveis de ataque para que seja verificada para as posições seguintes
     posicaoAtqX+=contX;
     posicaoAtqY+=contY;
   }
 
+  // Retornado falso caso o ataque nao seja bem sucedido
   return false;
 }
 
 bool ataqueFrontal(int contX,int posicaoAtqX,int posicaoY,char guerreiro,char tabuleiro[][12]){
+  // Chama a função que retorna qual é o tipo do guerreiro oposto
   char inimigo = guerreirOposto(guerreiro);
   bool interrompido = false;
   cout<<"--------------------------------------------------------------------------------------"<<endl;
+  // Enquanto a posição do ataque não exceder o tabuleiro com a coordenada x esse while esta rodando
   while (posicaoAtqX<(TAM-1) && posicaoAtqX>0 && !interrompido){
+    // Esse if verifica se na posição de ataque no tabuleiro tem uma peça inimiga
     if (tabuleiro[posicaoAtqX][posicaoY]==inimigo){
+      // Caso verdade remove a peça inimiga daquela posição
       tabuleiro[posicaoAtqX][posicaoY] = ' ';
+      // Imprime na tela a jogada que foi realizada
       cout<<"--> Guerreiro Da Posicao "<<posicaoAtqX<<","<<posicaoY<<" Morreu!"<<endl;
+      // Retorna verdade encerrando o ataque frontal
       return true;
-
     }
     if(tabuleiro[posicaoAtqX][posicaoY]==guerreiro){
+      // Se na posição de ataque mp tabuleiro tiver um guerreiro (aliado)
+      // É imprimido a frase informando que há um guerreiro aliado no caminho
       cout<<"--> Guerreiro Aliado No Caminho"<<endl;
+      // A flag interrompido é alterado para true encerrando o ataque frontal
+      // pois perceba que no while que faz essas verificações a variavel interrompido
+      // é levada em consideração
       interrompido = true;
     }
+    // Incrementação da posição de ataque para que continue sendo verificado para as casas seguintes
     posicaoAtqX+=contX;
   }
 
+  // Caso o ataque não tenha sucesso é retornado false
   return false;
 }
 
 void ataque(int posicaoX,int posicaoY,char tabuleiro[][12],char guerreiro,int qtd_jogador[]){
 
+  // Chama a função que lida em que sentido será feita o ataque
   int contX=somadorX(posicaoX);
   int posicaoAtqX;
   bool atq;
 
+  // Coloca o valor da posição no tabuleiro + sentido do ataque na variavel posicaoAtqX
   posicaoAtqX = posicaoX+contX;
-  // Verifica se o guerreiro for do jogador1 e chama a funcao que lida com o ataque frontal
+  // Verifica se o guerreiro é do jogador1 e chama a funcao que lida com o ataque frontal
   if (guerreiro == '1'){
+    // É chamada a função que lida com o ataque frontal e é retornado para a variavel
+    // atq true para ataque bem sucedido e false para ataque falho
     atq = ataqueFrontal(contX,posicaoAtqX,posicaoY,guerreiro,tabuleiro);
   }
   else{
+    // Entra aqui caso o guerreiro for '2'
+    // Variavel abaixo irá armazenar a direcao do atq | Esquerda: 1 | Direita: 2
     int direcaoAtq;
     cout<<"Ataque Diagonal (Esquerda: 1 | Direita: 2): ";
-    // Le se o ataque a ser feito é pra esqueda ou direita
+    // Le se o ataque a ser feito é pra esquerda ou direita
     cin>>direcaoAtq;
+
+    // Guardada na variavel contY o sentido em que sera feito o ataque (agora em relação a coordenada y do tabuleiro)
     int contY = somadorY(direcaoAtq,posicaoX);
+    // Coloca o valor da posição no tabuleiro + sentido do ataque na variavel posicaoAtqY
     int posicaoAtqY = posicaoY+contY;
+    // Chama a função que lida com o ataque diagonal e retorna para atq true se foi bem sucedida e false para o contrario
     atq = ataqueDiagonal(contY,contX,posicaoAtqX,posicaoAtqY,guerreiro,tabuleiro);
   }
   if (atq){
+    // Caso ataque seja bem sucedido é informado na tela
     cout<<"--> Ataque Realizado com Sucesso!"<<endl;
+    // Calcula em que time foi retirado uma peça e tira 1 unidade no array que guarda
+    // a quantidade de guerreiros em cada time
     qtd_jogador[(int)(guerreirOposto(guerreiro)) - '0' - 1]--;
   }
   else{
+    // Caso ataque nao seja bem sucedido é informado na tela
     cout<<"--> Ataque Falhou!"<<endl;
   }
 
@@ -315,7 +367,9 @@ void laponiaGame(char tabuleiro[][12],string nomeJogador1,string nomeJogador2,st
     // Chama a funcao responsavel por realizar a jogada
     realizarJogada(jogador,nomeJogador1,nomeJogador2,tabuleiro,qtd_jogador);
   }
+  // Caso o while pare de rodar é porque um dos dois times nao tem mais guerreiros
   cout<<"--------------------------------------Fim de Jogo---------------------------------------"<<endl;
+  // Nas linhas de baixo há uma verificação para printar o nome do jogador vencedor
   cout<<"GANHADOR: ";
   if (qtd_jogador[0]==0){
     cout<<nomeJogador2<<endl;
@@ -323,7 +377,6 @@ void laponiaGame(char tabuleiro[][12],string nomeJogador1,string nomeJogador2,st
   else{
     cout<<nomeJogador2<<endl;
   }
-
 
 }
 
@@ -363,5 +416,6 @@ int main(){
   if (start){
     laponiaGame(tabuleiro,nomeJogador1,nomeJogador2,jogador);
   }
+  // Caso start = 0 o programa é encerrado
   cout<<endl;
 }
